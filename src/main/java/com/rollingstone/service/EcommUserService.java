@@ -1,5 +1,8 @@
 package com.rollingstone.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +52,31 @@ public class EcommUserService {
     }
 
     //http://goo.gl/7fxvVf
-    public Page<User> getAllUsers(Integer page, Integer size) {
+    public Page<User> getAllUsersByPage(Integer page, Integer size) {
         Page pageOfUsers = userRepository.findAll(new PageRequest(page, size));
+        
+    	log.info("In Real Service Kaku Parameters" + size + page);
+
+    	log.info("In Real Service Kaku " + pageOfUsers.getSize());
+
         // example of adding to the /metrics
         if (size > 50) {
             counterService.increment("com.rollingstone.getAll.largePayload");
         }
         return pageOfUsers;
+    }
+    
+    public List<User> getAllUsers() {
+        Iterable<User> pageOfUsers = userRepository.findAll();
+        
+        List<User> users = new ArrayList<User>();
+        
+        for (User u : pageOfUsers){
+        	users.add(u);
+        }
+    	log.info("In Real Service Kaku getAllUsers users size :"+users.size());
+
+    	
+        return users;
     }
 }
